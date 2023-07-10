@@ -2,23 +2,59 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from docHandle.models import MtaInfo
+from docHandle.utils import FileUtil
 
 
-# Create your views here.
+# Create your api here.
 def index(request):
     return render(request, "DocHandle.html")
 
 
 def getDocx(request):
-    response = HttpResponse("C:\\Users\\77172\\Desktop\\example2.docx")
+    response = HttpResponse("/static/docHandle/example2.docx")
     return response
 
 
 def create_mta_info(request):
+    print(request)
     if request.method == "POST":
-        mid = request.POST.get("id")
         name = request.POST.get("name")
         card = request.POST.get("card")
-        mta = MtaInfo(mid=mid, name=name, card=card)
+        sex = request.POST.get("sex")
+        address = request.POST.get("address")
+        phone = request.POST.get("phone")
+        callTime = request.POST.get("callTime")
+        policyNumber = request.POST.get("policyNumber")
+        reportNumber = request.POST.get("reportNumber")
+        principalDate = request.POST.get("principalDate")
+        kindInsurance = request.POST.get("kindInsurance")
+        dateInsurance = request.POST.get("dateInsurance")
+        caseDesc = request.POST.get("caseDesc")
+        workMedicare = request.POST.get("workMedicare")
+        bodyHealth = request.POST.get("bodyHealth")
+        outpatient = request.POST.get("outpatient")
+        hospital = request.POST.get("hospital")
+
+        mta = MtaInfo(name=name, card=card, sex=sex, address=address, phone=phone, callTime=callTime,
+                      policyNumber=policyNumber,
+                      reportNumber=reportNumber, principalDate=principalDate, kindInsurance=kindInsurance,
+                      dateInsurance=dateInsurance,
+                      caseDesc=caseDesc, workMedicare=workMedicare, bodyHealth=bodyHealth, outpatient=outpatient,
+                      hospital=hospital)
         mta.save()
-    return JsonResponse({'message': 'User created successfully'})
+
+    return JsonResponse({'message': 'User created successfully', "code": 200, "data": None})
+
+
+def download_mta(request):
+    if request.method == "GET":
+        card = request.GET.get("card")
+        results = MtaInfo.objects.filter(card=card)
+        for result in results:
+            FileUtil.replaceDocxContent(result)
+    # results = MtaInfo.objects.filter(card="440506199601200728")
+    # for result in results:
+    #     FileUtil.replaceDocxContent(result)
+    return JsonResponse({'message': 'User created successfully', "code": 200, "data": None})
+
+

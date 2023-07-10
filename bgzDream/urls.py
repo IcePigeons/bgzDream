@@ -1,30 +1,30 @@
 """
 URL configuration for bgzDream project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The `urlpatterns` list routes URLs to api. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
 Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
+Function api
+    1. Add an import:  from my_app import api
+    2. Add a URL to urlpatterns:  path('', api.home, name='home')
+Class-based api
+    1. Add an import:  from other_app.api import Home
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from urllib import request
-
-from django.contrib import admin
 from django.urls import path
-
-from docHandle import views
-from docHandle.views import create_mta_info
+from docHandle.api.hospital import list_hospital
+from docHandle.api.mta import save_check_hospital
+from docHandle.views import create_mta_info, download_mta, index,getDocx
 
 urlpatterns = [
-    # path('index/', views.index),
-    path('doc/', views.index),
-    path('getDocx/', views.getDocx),
-    path('create_mta_info/', create_mta_info, name="create_mta_info")
+    path('doc/', index),
+    path('getDocx/', getDocx),
+    path('create_mta_info/', create_mta_info, name="create_mta_info"),
+    path('download_mta/', download_mta, name="download_mta"),
+
+    path('list_hospital/', list_hospital, name="list_hospital"),
+    path('save_check_hospital/', save_check_hospital,name="save_check_hospital"),
 ]
