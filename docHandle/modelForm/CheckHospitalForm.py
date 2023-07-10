@@ -9,4 +9,4 @@ class CheckHospitalForm(forms.ModelForm):
         fields = ['id', 'hospitalName', 'hospitalAddress', 'checkDate', 'userInfo', 'outpatientNumber',
                   'hospitalNumber', 'hospitalStayId', 'outpatientRecord', 'hospitalStayFirst', 'mainSymptom',
                   'medicalHistory', 'previousHistory', 'dischargeDiagnosis', 'remark', 'otherHospitalInfo',
-                  'type', 'checkContent', 'surveyResultTime', 'surveyResult', 'mtaInfoId']
+                  'type', 'checkContent', 'mtaInfoId']

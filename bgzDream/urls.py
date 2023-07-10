@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.urls import path
 from docHandle.api.hospital import list_hospital
-from docHandle.api.mta import save_check_hospital
-from docHandle.views import create_mta_info, download_mta, index,getDocx
+from docHandle.api.mta import save_check_hospital, download_mta
+from docHandle.views import create_mta_info, index,getDocx
 
 urlpatterns = [
     path('doc/', index),

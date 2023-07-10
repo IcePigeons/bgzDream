@@ -26,33 +26,33 @@ class MtaInfo(models.Model):
         db_table = 'bd_mta_info'
 
 
+# mta排查医院信息
 class MtaCheckHospital(models.Model):
-    id = models.AutoField(primary_key=True)
-    hospitalName = models.CharField(max_length=255)
-    hospitalAddress = models.CharField(max_length=255)
-    checkDate = models.CharField(max_length=255)
-    userInfo = models.CharField(max_length=255)
-    outpatientNumber = models.IntegerField()
-    hospitalNumber = models.IntegerField()
-    hospitalStayId = models.CharField(max_length=255)
-    outpatientRecord = models.CharField(max_length=1000)
-    hospitalStayFirst = models.CharField(max_length=255)
-    mainSymptom = models.CharField(max_length=500)
-    medicalHistory = models.CharField(max_length=2000)
-    previousHistory = models.CharField(max_length=2000)
-    dischargeDiagnosis = models.CharField(max_length=1000)
-    remark = models.CharField(max_length=255)
-    otherHospitalInfo = models.CharField(max_length=2000)
-    type = models.IntegerField()
-    checkContent = models.CharField(max_length=2000)
-    surveyResultTime = models.CharField(max_length=255)
-    surveyResult = models.CharField(max_length=1000)
-    mtaInfoId = models.IntegerField()
+    id = models.AutoField(primary_key=True, db_column='id')
+    hospitalName = models.CharField(max_length=255, db_column="hospital_name")
+    hospitalAddress = models.CharField(max_length=255, db_column="hospital_address")
+    checkDate = models.CharField(max_length=255, db_column="check_date")
+    userInfo = models.CharField(max_length=255, db_column="user_info")
+    outpatientNumber = models.IntegerField(db_column="outpatient_number")
+    hospitalNumber = models.IntegerField(db_column="hospital_number")
+    hospitalStayId = models.CharField(max_length=255, db_column="hospital_stay_id")
+    outpatientRecord = models.CharField(max_length=1000, db_column="outpatient_record")
+    hospitalStayFirst = models.CharField(max_length=255, db_column="hospital_stay_first")
+    mainSymptom = models.CharField(max_length=500, db_column="main_symptom")
+    medicalHistory = models.CharField(max_length=2000, db_column="medical_history")
+    previousHistory = models.CharField(max_length=2000, db_column="previous_history")
+    dischargeDiagnosis = models.CharField(max_length=1000, db_column="discharge_diagnosis")
+    remark = models.CharField(max_length=255, db_column="remark")
+    otherHospitalInfo = models.CharField(max_length=2000, db_column="other_hospital_info")
+    type = models.IntegerField(db_column="type")
+    checkContent = models.CharField(max_length=2000, db_column="check_content")
+    mtaInfoId = models.IntegerField(db_column="mta_info_id")
 
     class Meta:
         db_table = 'bd_mta_check_hospital'
 
 
+# 医院基础信息
 class Hospital(models.Model):
     id = models.AutoField(primary_key=True, db_column='id')
     name = models.CharField(max_length=255, db_column='name')

@@ -46,15 +46,5 @@ def create_mta_info(request):
     return JsonResponse({'message': 'User created successfully', "code": 200, "data": None})
 
 
-def download_mta(request):
-    if request.method == "GET":
-        card = request.GET.get("card")
-        results = MtaInfo.objects.filter(card=card)
-        for result in results:
-            FileUtil.replaceDocxContent(result)
-    # results = MtaInfo.objects.filter(card="440506199601200728")
-    # for result in results:
-    #     FileUtil.replaceDocxContent(result)
-    return JsonResponse({'message': 'User created successfully', "code": 200, "data": None})
 
 
