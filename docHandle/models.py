@@ -63,3 +63,18 @@ class Hospital(models.Model):
 
     class Meta:
         db_table = 'bd_hospital'
+
+
+# 结论信息
+class MtaConclusion(models.Model):
+    id = models.AutoField(primary_key=True, db_column='id')
+    accidentHospital = models.CharField(max_length=255, db_column='accident_hospital')
+    hospitalTimeRange = models.IntegerField(max_length=255, db_column='hospital_time_range')
+    dischargeDiagnosis = models.CharField(max_length=255, db_column='discharge_diagnosis')
+    editDate = models.CharField(max_length=255, db_column='edit_date')
+    recheck = models.CharField(max_length=255, db_column='recheck')
+    survey = models.CharField(max_length=255, db_column='survey')
+    mtaInfoId = models.IntegerField(db_column='mta_info_id')
+
+    class Meta:
+        db_table = 'bd_mta_conclusion'

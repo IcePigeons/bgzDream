@@ -16,15 +16,20 @@ Including another URLconf
 """
 from django.urls import path
 from docHandle.api.hospital import list_hospital
-from docHandle.api.mta import save_check_hospital, download_mta
-from docHandle.views import create_mta_info, index,getDocx
+from docHandle.api.mta import save_check_hospital, download_mta, get_user_info, create_mta_info, get_all_info
+from docHandle.views import index, getDocx
 
 urlpatterns = [
     path('doc/', index),
     path('getDocx/', getDocx),
-    path('create_mta_info/', create_mta_info, name="create_mta_info"),
     path('download_mta/', download_mta, name="download_mta"),
 
     path('list_hospital/', list_hospital, name="list_hospital"),
-    path('save_check_hospital/', save_check_hospital,name="save_check_hospital"),
+
+    path('save_check_hospital/', save_check_hospital, name="save_check_hospital"),
+
+    path('get_user_info/', get_user_info, name="get_user_info"),
+    path('create_mta_info/', create_mta_info, name="create_mta_info"),
+    path('create_mta_info/', create_mta_info, name="create_mta_info"),
+    path('get_all_info/', get_all_info, name="get_all_info"),
 ]

@@ -11,7 +11,7 @@ from docHandle.models import MtaInfo, MtaCheckHospital
 class FileUtil:
     # 民太安模板内容docx内容替换
     @staticmethod
-    def replaceDocxContent(mtaInfo: MtaInfo, mtaCheckHospitalArr: array,mtaUnCheckHospitalArr:array):
+    def replaceDocxContent(mtaInfo: MtaInfo, mtaCheckHospitalArr: list, mtaUnCheckHospitalArr: list):
         # print(os.path.abspath("DocxTemplate/mta-template.docx"))
         doc = DocxTemplate(os.path.abspath("DocxTemplate/mta-template.docx"))  # 选定模板
         # 需要替换的内容
