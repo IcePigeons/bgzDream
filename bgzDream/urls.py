@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.urls import path
 from docHandle.api.hospital import list_hospital
-from docHandle.api.mta import save_check_hospital, download_mta, get_user_info, create_mta_info, get_all_info
+from docHandle.api.mta import save_check_hospital, download_mta, get_user_info, create_mta_info, get_all_info, \
+    save_mta_conclusion
 from docHandle.views import index, getDocx
 
 urlpatterns = [
@@ -32,4 +33,5 @@ urlpatterns = [
     path('create_mta_info/', create_mta_info, name="create_mta_info"),
     path('create_mta_info/', create_mta_info, name="create_mta_info"),
     path('get_all_info/', get_all_info, name="get_all_info"),
+    path('save_mta_conclusion/',save_mta_conclusion,name='save_mta_conclusion')
 ]

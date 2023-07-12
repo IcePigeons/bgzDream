@@ -1,11 +1,13 @@
 import json
 
 from django.core import serializers
-from django.http import JsonResponse
+from django.forms import model_to_dict
+from django.http import JsonResponse, HttpResponse
 
 from docHandle.common import success_response
 
 from docHandle.models import MtaCheckHospital, MtaInfo, MtaConclusion
+from docHandle.serializer.ValueSerializers import ValueSerializer
 from docHandle.utils import FileUtil
 
 
@@ -15,26 +17,49 @@ def save_check_hospital(request):
         request.encoding = 'utf-8'
         data = json.loads(request.body)
         for obj in data:
-            # print(obj)
-            if obj['type'] == 1:
-                mch = MtaCheckHospital(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
-                                       checkDate=obj['checkDate'],
-                                       userInfo=obj['userInfo'], outpatientNumber=obj['outpatientNumber'],
-                                       hospitalNumber=obj['hospitalNumber'],
-                                       hospitalStayId=obj['hospitalStayId'], outpatientRecord=obj['outpatientRecord'],
-                                       hospitalStayFirst=obj['hospitalStayFirst'],
-                                       mainSymptom=obj['mainSymptom'], medicalHistory=obj['medicalHistory'],
-                                       dischargeDiagnosis=obj['dischargeDiagnosis'],
-                                       previousHistory=obj['previousHistory'],
-                                       remark=obj['remark'], otherHospitalInfo=obj['otherHospitalInfo'],
-                                       type=obj['type'])
-                mch.save()
-            else:
-                mch = MtaCheckHospital(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
-                                       checkDate=obj['checkDate'],
-                                       userInfo=obj['userInfo'], remark=obj['remark'], checkContent=obj['checkContent'],
-                                       type=obj['type'])
-                mch.save()
+            if obj['id'] is not None:  # 更新
+                if obj['type'] == 1:
+                    MtaCheckHospital.objects.filter(id=obj['id']) \
+                        .update(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
+                                checkDate=obj['checkDate'],
+                                userInfo=obj['userInfo'], outpatientNumber=obj['outpatientNumber'],
+                                hospitalNumber=obj['hospitalNumber'],
+                                hospitalStayId=obj['hospitalStayId'], outpatientRecord=obj['outpatientRecord'],
+                                hospitalStayFirst=obj['hospitalStayFirst'],
+                                mainSymptom=obj['mainSymptom'], medicalHistory=obj['medicalHistory'],
+                                dischargeDiagnosis=obj['dischargeDiagnosis'],
+                                previousHistory=obj['previousHistory'],
+                                remark=obj['remark'], otherHospitalInfo=obj['otherHospitalInfo'],
+                                type=obj['type'], mtaInfoId=obj['mtaInfoId'])
+                else:
+                    MtaCheckHospital.objects.filter(id=obj['id']) \
+                        .update(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
+                                checkDate=obj['checkDate'],
+                                userInfo=obj['userInfo'], remark=obj['remark'],
+                                checkContent=obj['checkContent'],
+                                type=obj['type'], mtaInfoId=obj['mtaInfoId'])
+            else:  # 新增
+                if obj['type'] == 1:
+                    mch = MtaCheckHospital(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
+                                           checkDate=obj['checkDate'],
+                                           userInfo=obj['userInfo'], outpatientNumber=obj['outpatientNumber'],
+                                           hospitalNumber=obj['hospitalNumber'],
+                                           hospitalStayId=obj['hospitalStayId'],
+                                           outpatientRecord=obj['outpatientRecord'],
+                                           hospitalStayFirst=obj['hospitalStayFirst'],
+                                           mainSymptom=obj['mainSymptom'], medicalHistory=obj['medicalHistory'],
+                                           dischargeDiagnosis=obj['dischargeDiagnosis'],
+                                           previousHistory=obj['previousHistory'],
+                                           remark=obj['remark'], otherHospitalInfo=obj['otherHospitalInfo'],
+                                           type=obj['type'], mtaInfoId=obj['mtaInfoId'])
+                    mch.save()
+                else:
+                    mch = MtaCheckHospital(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
+                                           checkDate=obj['checkDate'],
+                                           userInfo=obj['userInfo'], remark=obj['remark'],
+                                           checkContent=obj['checkContent'],
+                                           type=obj['type'], mtaInfoId=obj['mtaInfoId'])
+                    mch.save()
     return success_response(None)
 
 
@@ -107,12 +132,12 @@ def get_all_info(request):
     if request.method == "GET":
         id_key = request.GET.get("id")
         mta_info = MtaInfo.objects.get(id=id_key)
-        check_hospital = MtaCheckHospital.objects.filter(mtaInfoId=id_key)
-        conclusion = MtaConclusion.objects.filter(mtaInfoId=id_key)
+        check_hospital = MtaCheckHospital.objects.all()
+        conclusion = MtaConclusion.objects.get(mtaInfoId=id_key)
         data = {
-            "mtaInfo": serializers.serialize('json', [mta_info]),
-            "checkHospital": serializers.serialize('json', list(check_hospital)),
-            "conclusion": serializers.serialize('json', list(conclusion))
+            "mtaInfo": model_to_dict(mta_info),
+            "checkHospital": serializers.serialize("json", check_hospital),
+            "conclusion": model_to_dict(conclusion)
         }
 
         return success_response(data)
@@ -124,3 +149,28 @@ def get_mta_conclusion(request):
         id_key = request.GET.get("id")
         all_obj = MtaConclusion.objects.get(id=id_key)
         return JsonResponse({'message': 'User created successfully', "code": 200, "data": all_obj})
+
+
+# 更新/新增结论
+def save_mta_conclusion(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        id_key = data.get("id")
+        add_mta_conclusion(id_key, data)
+    return success_response(None)
+
+
+def add_mta_conclusion(id_key: int, data):
+    if id_key is not None:  # 更新
+        MtaConclusion.objects.filter(id=id_key) \
+            .update(accidentHospital=data.get('accidentHospital'),
+                    hospitalTimeRange=data.get('hospitalTimeRange'),
+                    dischargeDiagnosis=data.get('dischargeDiagnosis'), editDate=data.get('editDate'),
+                    recheck=data.get('recheck'),
+                    survey=data.get('survey'), mtaInfoId=data.get('mtaInfoId'))
+    else:
+        MtaConclusion(accidentHospital=data.get('accidentHospital'),
+                      hospitalTimeRange=data.get('hospitalTimeRange'),
+                      dischargeDiagnosis=data.get('dischargeDiagnosis'), editDate=data.get('editDate'),
+                      recheck=data.get('recheck'),
+                      survey=data.get('survey'), mtaInfoId=data.get('mtaInfoId')).save()
