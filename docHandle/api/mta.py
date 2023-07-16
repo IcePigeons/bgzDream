@@ -1,13 +1,12 @@
 import json
+import os.path
 
 from django.core import serializers
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 
-from docHandle.common import success_response
-
+from docHandle.common import success_response, error_response
 from docHandle.models import MtaCheckHospital, MtaInfo, MtaConclusion
-from docHandle.serializer.ValueSerializers import ValueSerializer
 from docHandle.utils import FileUtil
 
 
@@ -17,7 +16,7 @@ def save_check_hospital(request):
         request.encoding = 'utf-8'
         data = json.loads(request.body)
         for obj in data:
-            if obj['id'] is not None:  # 更新
+            if obj['id']  != -1:  # 更新
                 if obj['type'] == 1:
                     MtaCheckHospital.objects.filter(id=obj['id']) \
                         .update(hospitalName=obj['hospitalName'], hospitalAddress=obj['hospitalAddress'],
@@ -61,6 +60,17 @@ def save_check_hospital(request):
                                            type=obj['type'], mtaInfoId=obj['mtaInfoId'])
                     mch.save()
     return success_response(None)
+
+
+def delete_check_hospital(request):
+    if request.method == 'GET':
+        id_key = request.GET.get("id")
+        try:
+            MtaCheckHospital.objects.get(id=id_key).delete()
+        except Exception as error:
+            # 处理异常
+            return error_response("删除失败："+error)
+        return success_response(None)
 
 
 # 新增/更新基础信息
@@ -108,16 +118,38 @@ def create_mta_info(request):
 
 # 导出结果文件
 def download_mta(request):
-    if request.method == "GET":
-        card = request.GET.get("card")
-        mta_info = MtaInfo.objects.filter(card=card).first()
+    if request.method == "POST":
+        body = json.loads(request.body)
+        id_key = body.get("params").get("id")
+        # card = request.POST.get("card")
+        mta_info = MtaInfo.objects.filter(id=id_key).first()
         mta_check_hospital = MtaCheckHospital.objects.filter(mtaInfoId=mta_info.id).filter(type=1)
         un_mta_check_hospital = MtaCheckHospital.objects.filter(mtaInfoId=mta_info.id).filter(type=2)
+        mta_conclusion = MtaConclusion.objects.filter(mtaInfoId=mta_info.id).first()
         # 转为列表
         mta_check_hospital_arr = list(mta_check_hospital)
         un_mta_check_hospital_arr = list(un_mta_check_hospital)
-        FileUtil.replaceDocxContent(mta_info, mta_check_hospital_arr, un_mta_check_hospital_arr)
-    return JsonResponse({'message': 'User created successfully', "code": 200, "data": None})
+        filepath = FileUtil.replaceDocxContent(mta_info, mta_check_hospital_arr, un_mta_check_hospital_arr,
+                                               mta_conclusion)
+
+        # 返回文件
+        response = HttpResponse(read_file(filepath))
+        response['content_type'] = "application/octet-stream"
+        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(filepath)
+        if response is not None:
+            return response
+        else:
+            return error_response("访问失败")
+
+
+def read_file(url, chunk_size=512):
+    with open(url, "rb") as f:
+        while True:
+            c = f.read(chunk_size)
+            if c:
+                yield c
+            else:
+                break
 
 
 # 获取用户列表信息

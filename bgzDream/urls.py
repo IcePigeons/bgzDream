@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
+
 from docHandle.api.hospital import list_hospital
 from docHandle.api.mta import save_check_hospital, download_mta, get_user_info, create_mta_info, get_all_info, \
-    save_mta_conclusion
+    save_mta_conclusion, delete_check_hospital
 from docHandle.views import index, getDocx
 
 urlpatterns = [
@@ -33,5 +34,6 @@ urlpatterns = [
     path('create_mta_info/', create_mta_info, name="create_mta_info"),
     path('create_mta_info/', create_mta_info, name="create_mta_info"),
     path('get_all_info/', get_all_info, name="get_all_info"),
-    path('save_mta_conclusion/',save_mta_conclusion,name='save_mta_conclusion')
+    path('save_mta_conclusion/',save_mta_conclusion,name='save_mta_conclusion'),
+    path('delete_check_hospital/',delete_check_hospital,name='delete_check_hospital')
 ]

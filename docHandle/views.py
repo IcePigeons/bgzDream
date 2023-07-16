@@ -1,8 +1,5 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
-
-from docHandle.models import MtaInfo
-from docHandle.utils import FileUtil
 
 
 # Create your api here.

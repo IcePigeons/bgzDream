@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,11 +78,14 @@ WSGI_APPLICATION = 'bgzDream.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bgzDream',
+        'NAME': 'bgzdream',
         'USER': 'root',
-        'PASSWORD': 'Cheng1000!',
+        # 'PASSWORD': 'Cheng1000!',
         'HOST': '127.0.0.1',
-        'PORT': '3306',
+        # 'PORT': '3306',
+        # 'HOST': '116.205.225.197',
+        'PORT': '4000',   #线上
+        'PASSWORD': 'Cheng100!',
     }
 
 }
